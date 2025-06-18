@@ -1,0 +1,91 @@
+spring:
+  cloud:
+    eureka:
+      client:
+        service-url:
+          defaultZone: http://eureka-server:8761/eureka/
+        fetch-registry: true
+        register-with-eureka: true
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        # Auth Service
+        - id: eureka-service
+          uri: lb://eureka-server
+          predicates:
+            - Path=/eureka/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: eurekaCircuitBreaker
+                fallbackUri: forward:/fallback/eureka
+        - id: cita-service
+          uri: lb://cita-service  # Usando LoadBalancer para hacer el balanceo de carga
+          predicates:
+            - Path=/api/citas/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: citaServiceCircuitBreaker
+                fallbackUri: forward:/fallback/cita-service
+
+        # Pacientes Service
+        - id: pacientes-service
+          uri: lb://pacientes-service
+          predicates:
+            - Path=/api/pacientes/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: pacientesCircuitBreaker
+                fallbackUri: forward:/fallback/pacientes
+            - StripPrefix=1
+
+        - id: rate-limited-route
+          filters:
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+                redis-rate-limiter.requestedTokens: 1
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://keycloak:8080/realms/clinic-realm
+
+
+  resilience4j:
+    circuitbreaker:
+      instances:
+        authCircuitBreaker:
+          registerHealthIndicator: true
+          slidingWindowSize: 10
+          failureRateThreshold: 50
+          waitDurationInOpenState: 10000
+        pacientesCircuitBreaker:
+          registerHealthIndicator: true
+          slidingWindowSize: 10
+          failureRateThreshold: 50
+          waitDurationInOpenState: 10000
+        doctorCircuitBreaker:
+          registerHealthIndicator: true
+          slidingWindowSize: 10
+          failureRateThreshold: 50
+          waitDurationInOpenState: 10000
+        usuariosCircuitBreaker:
+          registerHealthIndicator: true
+          slidingWindowSize: 10
+          failureRateThreshold: 50
+          waitDurationInOpenState: 10000
+  
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+
+
