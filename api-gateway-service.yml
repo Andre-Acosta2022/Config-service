@@ -76,6 +76,17 @@ spring:
                 name: pacientesServiceCircuitBreaker
                 fallbackUri: forward:/fallback/pacientes-service
             - StripPrefix=1
+        - id: Pagos-Service
+          uri: lb://Pagos-Service
+          predicates:
+            - Path=/api/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: PagosServiceCircuitBreaker
+                fallbackUri: forward:/fallback/Pagos-Service
+            - StripPrefix=1
+
 
         - id: rate-limited-route
           filters:
