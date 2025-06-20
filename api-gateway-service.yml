@@ -73,8 +73,8 @@ spring:
           filters:
             - name: CircuitBreaker
               args:
-                name: pacientesCircuitBreaker
-                fallbackUri: forward:/fallback/pacientes
+                name: pacientesServiceCircuitBreaker
+                fallbackUri: forward:/fallback/pacientes-service
             - StripPrefix=1
 
         - id: rate-limited-route
