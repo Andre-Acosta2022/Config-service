@@ -2,9 +2,6 @@ server:
   port: 8082
 
 spring:
-  cloud:
-    config:
-      enabled: false
   application:
     name: citas-service
   datasource:
