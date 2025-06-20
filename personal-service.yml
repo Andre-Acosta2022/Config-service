@@ -2,9 +2,6 @@ server:
   port: 8084
 
 spring:
-  cloud:
-    config:
-      enabled: false
   application:
     name: personal-service
   datasource:
