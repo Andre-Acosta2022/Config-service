@@ -23,7 +23,7 @@ spring:
                 name: eurekaCircuitBreaker
                 fallbackUri: forward:/fallback/eureka
         - id: cita-service
-          uri: lb://cita-service  # Usando LoadBalancer para hacer el balanceo de carga
+          uri: lb://cita-service  
           predicates:
             - Path=/api/citas/**
           filters:
@@ -31,7 +31,15 @@ spring:
               args:
                 name: citaServiceCircuitBreaker
                 fallbackUri: forward:/fallback/cita-service
-
+        - id: personal-service
+          uri: lb://personal-service
+          predicates:
+            - Path=/api/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: citaServiceCircuitBreaker
+                fallbackUri: forward:/fallback/personal-service
         # Pacientes Service
         - id: pacientes-service
           uri: lb://pacientes-service
