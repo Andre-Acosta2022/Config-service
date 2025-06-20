@@ -2,9 +2,6 @@ server:
   port: 8081
 
 spring:
-  cloud:
-    config:
-      enabled: false
   application:
     name: clinicas-service
   datasource:
