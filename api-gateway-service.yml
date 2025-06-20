@@ -57,6 +57,15 @@ spring:
               args:
                 name: historialclinicoServiceCircuitBreaker
                 fallbackUri: forward:/fallback/historial-clinico-service
+        - id: informes-service
+          uri: lb://informes-service
+          predicates:
+            - Path=/api/informes/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: informesServiceCircuitBreaker
+                fallbackUri: forward:/fallback/informes-service
         - id: pacientes-service
           uri: lb://pacientes-service
           predicates:
