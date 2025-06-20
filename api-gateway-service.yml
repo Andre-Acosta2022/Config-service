@@ -12,7 +12,6 @@ spring:
           enabled: true
           lower-case-service-id: true
       routes:
-        # Auth Service
         - id: eureka-service
           uri: lb://eureka-server
           predicates:
@@ -38,9 +37,17 @@ spring:
           filters:
             - name: CircuitBreaker
               args:
-                name: citaServiceCircuitBreaker
+                name: personalServiceCircuitBreaker
                 fallbackUri: forward:/fallback/personal-service
-        # Pacientes Service
+        - id: clinicas-service
+          uri: lb://clinicas-service
+          predicates:
+            - Path=/api/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: clinicasServiceCircuitBreaker
+                fallbackUri: forward:/fallback/clinicas-service
         - id: pacientes-service
           uri: lb://pacientes-service
           predicates:
