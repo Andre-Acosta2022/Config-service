@@ -23,7 +23,7 @@ feign:
   client:
     config:
       citas-service:
-        url: "http://localhost:8082"  # La URL de tu servicio citas-service, donde está corriendo en el puerto 8082
+        url: "http://citas-service:8082"  # La URL de tu servicio citas-service, donde está corriendo en el puerto 8082
       default:
         connectTimeout: 5000
         readTimeout: 5000
