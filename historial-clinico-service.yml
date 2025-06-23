@@ -5,7 +5,7 @@ spring:
   application:
     name: historial-clinico-service
   datasource:
-    url: jdbc:mysql://localhost:3310/clinica_db
+    url: jdbc:mysql://mysqldb:3306/clinica_db
     username: root
     password: 123456
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -21,15 +21,7 @@ spring:
     enabled: false
 
 
-eureka:
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka
-    fetch-registry: true
-    register-with-eureka: true
-  instance:
-    appname: historial-clinico-service
-    instance-id: ${spring.application.name}:${random.value}
+
 
 feign:
   client:
