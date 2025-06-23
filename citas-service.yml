@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: citas-service
+    name: cita-service
   datasource:
     url: jdbc:mysql://mysqldb:3306/clinica_db
     username: root
