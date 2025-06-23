@@ -25,11 +25,11 @@ feign:
   client:
     config:
       pacientes-service:
-        url: "http://localhost:8083"  # La URL de tu servicio citas-service, donde está corriendo en el puerto 8082
+        url: "http://pacientes-service:8083"  # La URL de tu servicio citas-service, donde está corriendo en el puerto 8082
       clinicas-service:
-        url: "http://localhost:8081"  # La URL de tu servicio citas-service, donde está corriendo en el puerto 8082
+        url: "http://clinicas-service:8081"  # La URL de tu servicio citas-service, donde está corriendo en el puerto 8082
       personal-service:
-        url: "http://localhost:8084"  # La URL de tu servicio citas-service, donde está corriendo en el puerto 8082
+        url: "http://personal-service:8084"  # La URL de tu servicio citas-service, donde está corriendo en el puerto 8082
       default:
         connectTimeout: 5000
         readTimeout: 5000
