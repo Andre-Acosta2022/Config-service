@@ -12,7 +12,7 @@ spring:
 
     gateway:
       server:
-        webflux:
+        servlet:
           discovery:
             locator:
               enabled: true
