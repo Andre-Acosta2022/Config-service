@@ -4,6 +4,12 @@ server:
 spring:
   application:
     name: cita-service
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/clinica-realm
+          jwk-set-uri: http://localhost:8080/realms/clinica-realm/protocol/openid-connect/certs
   datasource:
     url: jdbc:mysql://mysqldb:3306/clinica_db
     username: root
