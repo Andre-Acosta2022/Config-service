@@ -2,7 +2,7 @@ spring:
   cloud:
     gateway:
       cors:
-        allowed-origins: "http://localhost:3000"  # Cambia la URL a la del frontend React
+        allowed-origins: "http://localhost:5173"  # Cambia la URL a la del frontend React
         allowed-methods:
           - GET
           - POST
