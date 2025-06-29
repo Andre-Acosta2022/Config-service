@@ -4,40 +4,6 @@ spring:
 
 server:
   port: 8089
-
-
-keycloak:
-  auth-server-url: ${KEYCLOAK_AUTH_SERVER_URL:http://localhost:8080}
-  realm: clinica-realm
-  client-id: clinica-client
-  client-secret: your-client-secret
-  admin:
-    username: admin
-    password: admin123
-    client-id: admin-cli
-
-
-  security:
-    oauth2:
-      resourceserver:
-        jwt:
-          issuer-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}
-          jwk-set-uri: ${keycloak.auth-server-url}/realms/${keycloak.realm}/protocol/openid-connect/certs
-
-
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: ${MAIL_USERNAME:your-email@gmail.com}
-    password: ${MAIL_PASSWORD:your-app-password}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
-
   datasource:
     url: jdbc:mysql://mysqldb:3306/clinica_db
     username: root
@@ -51,9 +17,4 @@ keycloak:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
 
-# Configuración de logging
-logging:
-  level:
-    com.clinic.auth_service: DEBUG
-    org.keycloak: DEBUG
-    org.springframework.security: DEBUG
+
