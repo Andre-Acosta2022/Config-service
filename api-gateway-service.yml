@@ -11,16 +11,13 @@ spring:
         register-with-eureka: true
 
     gateway:
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
       server:
         webflux:
           discovery:
             locator:
               enabled: true
               lower-case-service-id: true
+
       default-filters:
         - name: RequestRateLimiter
           args:
