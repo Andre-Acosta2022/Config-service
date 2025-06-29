@@ -15,8 +15,9 @@ spring:
               args:
                 name: eurekaCircuitBreaker
                 fallbackUri: forward:/fallback/eureka
+
         - id: cita-service
-          uri: lb://cita-service  
+          uri: lb://cita-service
           predicates:
             - Path=/api/citas/**
           filters:
@@ -24,6 +25,7 @@ spring:
               args:
                 name: citaServiceCircuitBreaker
                 fallbackUri: forward:/fallback/cita-service
+
         - id: personal-service
           uri: lb://personal-service
           predicates:
@@ -33,6 +35,7 @@ spring:
               args:
                 name: personalServiceCircuitBreaker
                 fallbackUri: forward:/fallback/personal-service
+
         - id: clinicas-service
           uri: lb://clinicas-service
           predicates:
@@ -42,6 +45,7 @@ spring:
               args:
                 name: clinicasServiceCircuitBreaker
                 fallbackUri: forward:/fallback/clinicas-service
+
         - id: historial-clinico-service
           uri: lb://historial-clinico-service
           predicates:
@@ -51,6 +55,7 @@ spring:
               args:
                 name: historialclinicoServiceCircuitBreaker
                 fallbackUri: forward:/fallback/historial-clinico-service
+
         - id: informes-service
           uri: lb://informes-service
           predicates:
@@ -60,6 +65,7 @@ spring:
               args:
                 name: informesServiceCircuitBreaker
                 fallbackUri: forward:/fallback/informes-service
+
         - id: pacientes-service
           uri: lb://pacientes-service
           predicates:
@@ -70,17 +76,17 @@ spring:
                 name: pacientesServiceCircuitBreaker
                 fallbackUri: forward:/fallback/pacientes-service
             - StripPrefix=1
-        - id: Pagos-Service
-          uri: lb://Pagos-Service
+
+        - id: pagos-service
+          uri: lb://pagos-service
           predicates:
             - Path=/api/**
           filters:
             - name: CircuitBreaker
               args:
-                name: PagosServiceCircuitBreaker
-                fallbackUri: forward:/fallback/Pagos-Service
+                name: pagosServiceCircuitBreaker
+                fallbackUri: forward:/fallback/pagos-service
             - StripPrefix=1
-
 
         - id: rate-limited-route
           filters:
@@ -89,40 +95,69 @@ spring:
                 redis-rate-limiter.replenishRate: 10
                 redis-rate-limiter.burstCapacity: 20
                 redis-rate-limiter.requestedTokens: 1
+
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8080/realms/clinic-realm
-
+          issuer-uri: http://keycloak:8080/realms/clinic-realm # Verifica la URL de Keycloak
 
   resilience4j:
     circuitbreaker:
       instances:
-        authCircuitBreaker:
-          registerHealthIndicator: true
-          slidingWindowSize: 10
-          failureRateThreshold: 50
-          waitDurationInOpenState: 10000
-        pacientesCircuitBreaker:
-          registerHealthIndicator: true
-          slidingWindowSize: 10
-          failureRateThreshold: 50
-          waitDurationInOpenState: 10000
-        doctorCircuitBreaker:
-          registerHealthIndicator: true
-          slidingWindowSize: 10
-          failureRateThreshold: 50
-          waitDurationInOpenState: 10000
-        usuariosCircuitBreaker:
+        eurekaCircuitBreaker:
           registerHealthIndicator: true
           slidingWindowSize: 10
           failureRateThreshold: 50
           waitDurationInOpenState: 10000
   
+        citaServiceCircuitBreaker:
+          registerHealthIndicator: true
+          slidingWindowSize: 10
+          failureRateThreshold: 50
+          waitDurationInOpenState: 10000
+  
+        personalServiceCircuitBreaker:
+          registerHealthIndicator: true
+          slidingWindowSize: 10
+          failureRateThreshold: 50
+          waitDurationInOpenState: 10000
+  
+        clinicasServiceCircuitBreaker:
+          registerHealthIndicator: true
+          slidingWindowSize: 10
+          failureRateThreshold: 50
+          waitDurationInOpenState: 10000
+  
+        historialclinicoServiceCircuitBreaker:
+          registerHealthIndicator: true
+          slidingWindowSize: 10
+          failureRateThreshold: 50
+          waitDurationInOpenState: 10000
+  
+        informesServiceCircuitBreaker:
+          registerHealthIndicator: true
+          slidingWindowSize: 10
+          failureRateThreshold: 50
+          waitDurationInOpenState: 10000
+  
+        pacientesServiceCircuitBreaker:
+          registerHealthIndicator: true
+          slidingWindowSize: 10
+          failureRateThreshold: 50
+          waitDurationInOpenState: 10000
+  
+        pagosServiceCircuitBreaker:
+          registerHealthIndicator: true
+          slidingWindowSize: 10
+          failureRateThreshold: 50
+          waitDurationInOpenState: 10000
+
+
 management:
   endpoints:
     web:
       exposure:
-        include: health, info, metrics, prometheus
+        include: health, info, metrics, prometheus  # Para monitoreo de salud y métricas
 
+# Asegúrate de que Redis esté correctamente configurado si usas rate limiting
