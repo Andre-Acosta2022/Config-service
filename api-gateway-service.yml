@@ -10,102 +10,102 @@ spring:
         fetch-registry: true
         register-with-eureka: true
 
-    gateway:
-      server:
-        webflux:
-          discovery:
-            locator:
-              enabled: true
-              lower-case-service-id: true
-
-      default-filters:
-        - name: RequestRateLimiter
-          args:
-            redis-rate-limiter.replenish-rate: 10
-            redis-rate-limiter.burst-capacity: 20
-            redis-rate-limiter.requested-tokens: 1
-      routes:
-        - id: eureka-service
-          uri: lb://eureka-server
-          predicates:
-            - Path=/eureka/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: eurekaCircuitBreaker
-                fallbackUri: forward:/fallback/eureka
-        - id: cita-service
-          uri: lb://cita-service  
-          predicates:
-            - Path=/api/citas/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: citaServiceCircuitBreaker
-                fallbackUri: forward:/fallback/cita-service
-        - id: personal-service
-          uri: lb://personal-service
-          predicates:
-            - Path=/api/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: personalServiceCircuitBreaker
-                fallbackUri: forward:/fallback/personal-service
-        - id: clinicas-service
-          uri: lb://clinicas-service
-          predicates:
-            - Path=/api/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: clinicasServiceCircuitBreaker
-                fallbackUri: forward:/fallback/clinicas-service
-        - id: historial-clinico-service
-          uri: lb://historial-clinico-service
-          predicates:
-            - Path=/api/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: historialclinicoServiceCircuitBreaker
-                fallbackUri: forward:/fallback/historial-clinico-service
-        - id: informes-service
-          uri: lb://informes-service
-          predicates:
-            - Path=/api/informes/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: informesServiceCircuitBreaker
-                fallbackUri: forward:/fallback/informes-service
-        - id: pacientes-service
-          uri: lb://pacientes-service
-          predicates:
-            - Path=/api/pacientes/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: pacientesServiceCircuitBreaker
-                fallbackUri: forward:/fallback/pacientes-service
-            - StripPrefix=1
-        - id: Pagos-Service
-          uri: lb://Pagos-Service
-          predicates:
-            - Path=/api/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: PagosServiceCircuitBreaker
-                fallbackUri: forward:/fallback/Pagos-Service
-            - StripPrefix=1
-        - id: rate-limited-route
-          filters:
+      gateway:
+        server:
+          webflux:
+            discovery:
+              locator:
+                enabled: true
+                lower-case-service-id: true
+  
+          default-filters:
             - name: RequestRateLimiter
               args:
-                redis-rate-limiter.replenishRate: 10
-                redis-rate-limiter.burstCapacity: 20
-                redis-rate-limiter.requestedTokens: 1
+                redis-rate-limiter.replenish-rate: 10
+                redis-rate-limiter.burst-capacity: 20
+                redis-rate-limiter.requested-tokens: 1
+          routes:
+            - id: eureka-service
+              uri: lb://eureka-server
+              predicates:
+                - Path=/eureka/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: eurekaCircuitBreaker
+                    fallbackUri: forward:/fallback/eureka
+            - id: cita-service
+              uri: lb://cita-service  
+              predicates:
+                - Path=/api/citas/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: citaServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/cita-service
+            - id: personal-service
+              uri: lb://personal-service
+              predicates:
+                - Path=/api/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: personalServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/personal-service
+            - id: clinicas-service
+              uri: lb://clinicas-service
+              predicates:
+                - Path=/api/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: clinicasServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/clinicas-service
+            - id: historial-clinico-service
+              uri: lb://historial-clinico-service
+              predicates:
+                - Path=/api/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: historialclinicoServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/historial-clinico-service
+            - id: informes-service
+              uri: lb://informes-service
+              predicates:
+                - Path=/api/informes/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: informesServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/informes-service
+            - id: pacientes-service
+              uri: lb://pacientes-service
+              predicates:
+                - Path=/api/pacientes/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: pacientesServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/pacientes-service
+                - StripPrefix=1
+            - id: Pagos-Service
+              uri: lb://Pagos-Service
+              predicates:
+                - Path=/api/**
+              filters:
+                - name: CircuitBreaker
+                  args:
+                    name: PagosServiceCircuitBreaker
+                    fallbackUri: forward:/fallback/Pagos-Service
+                - StripPrefix=1
+            - id: rate-limited-route
+              filters:
+                - name: RequestRateLimiter
+                  args:
+                    redis-rate-limiter.replenishRate: 10
+                    redis-rate-limiter.burstCapacity: 20
+                    redis-rate-limiter.requestedTokens: 1
 
   security:
     oauth2:
