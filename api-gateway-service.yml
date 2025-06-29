@@ -1,30 +1,10 @@
 spring:
-  main:
-    allow-bean-definition-overriding: true
-
   cloud:
-    eureka:
-      client:
-        service-url:
-          defaultZone: http://eureka-server:8761/eureka/
-        fetch-registry: true
-        register-with-eureka: true
-
     gateway:
-      server:
-        servlet:
-          discovery:
-            locator:
-              enabled: true
-              lower-case-service-id: true
-
-      default-filters:
-        - name: RequestRateLimiter
-          args:
-            redis-rate-limiter.replenish-rate: 10
-            redis-rate-limiter.burst-capacity: 20
-            redis-rate-limiter.requested-tokens: 1
-
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
       routes:
         - id: eureka-service
           uri: lb://eureka-server
@@ -35,9 +15,8 @@ spring:
               args:
                 name: eurekaCircuitBreaker
                 fallbackUri: forward:/fallback/eureka
-
         - id: cita-service
-          uri: lb://cita-service
+          uri: lb://cita-service  
           predicates:
             - Path=/api/citas/**
           filters:
@@ -45,7 +24,6 @@ spring:
               args:
                 name: citaServiceCircuitBreaker
                 fallbackUri: forward:/fallback/cita-service
-
         - id: personal-service
           uri: lb://personal-service
           predicates:
@@ -55,7 +33,6 @@ spring:
               args:
                 name: personalServiceCircuitBreaker
                 fallbackUri: forward:/fallback/personal-service
-
         - id: clinicas-service
           uri: lb://clinicas-service
           predicates:
@@ -65,7 +42,6 @@ spring:
               args:
                 name: clinicasServiceCircuitBreaker
                 fallbackUri: forward:/fallback/clinicas-service
-
         - id: historial-clinico-service
           uri: lb://historial-clinico-service
           predicates:
@@ -75,7 +51,6 @@ spring:
               args:
                 name: historialclinicoServiceCircuitBreaker
                 fallbackUri: forward:/fallback/historial-clinico-service
-
         - id: informes-service
           uri: lb://informes-service
           predicates:
@@ -85,7 +60,6 @@ spring:
               args:
                 name: informesServiceCircuitBreaker
                 fallbackUri: forward:/fallback/informes-service
-
         - id: pacientes-service
           uri: lb://pacientes-service
           predicates:
@@ -96,17 +70,17 @@ spring:
                 name: pacientesServiceCircuitBreaker
                 fallbackUri: forward:/fallback/pacientes-service
             - StripPrefix=1
-
-        - id: pagos-service
-          uri: lb://pagos-service
+        - id: Pagos-Service
+          uri: lb://Pagos-Service
           predicates:
             - Path=/api/**
           filters:
             - name: CircuitBreaker
               args:
-                name: pagosServiceCircuitBreaker
-                fallbackUri: forward:/fallback/pagos-service
+                name: PagosServiceCircuitBreaker
+                fallbackUri: forward:/fallback/Pagos-Service
             - StripPrefix=1
+
 
         - id: rate-limited-route
           filters:
@@ -115,19 +89,12 @@ spring:
                 redis-rate-limiter.replenishRate: 10
                 redis-rate-limiter.burstCapacity: 20
                 redis-rate-limiter.requestedTokens: 1
-
   security:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${KEYCLOAK_AUTH_SERVER_URL:http://localhost:8080}/realms/clinica-realm
-          jwk-set-uri: ${KEYCLOAK_AUTH_SERVER_URL:http://localhost:8080}/realms/clinica-realm/protocol/openid-connect/certs
+          issuer-uri: http://keycloak:8080/realms/clinic-realm
 
-  data:
-    redis:
-      host: redis
-      port: 6379
-      timeout: 2000ms
 
   resilience4j:
     circuitbreaker:
@@ -152,15 +119,10 @@ spring:
           slidingWindowSize: 10
           failureRateThreshold: 50
           waitDurationInOpenState: 10000
-
-logging:
-  level:
-    com.clinic.api_gateway_service: DEBUG
-    org.springframework.cloud.gateway: DEBUG
-    org.springframework.security: DEBUG
-
+  
 management:
   endpoints:
     web:
       exposure:
         include: health, info, metrics, prometheus
+
