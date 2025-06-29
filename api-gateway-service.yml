@@ -11,6 +11,12 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
+      default-filters:
+        - name: RequestRateLimiter
+          args:
+            redis-rate-limiter.replenish-rate: 10
+            redis-rate-limiter.burst-capacity: 20
+            redis-rate-limiter.requested-tokens: 1
       routes:
         - id: eureka-service
           uri: lb://eureka-server
@@ -99,9 +105,15 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: http://keycloak:8080/realms/clinic-realm
+          issuer-uri: ${KEYCLOAK_AUTH_SERVER_URL:http://localhost:8080}/realms/clinica-realm
+          jwk-set-uri: ${KEYCLOAK_AUTH_SERVER_URL:http://localhost:8080}/realms/clinica-realm/protocol/openid-connect/certs
 
-
+  data:
+    redis:
+      host: redis
+      port: 6379
+      timeout: 2000ms
+  
   resilience4j:
     circuitbreaker:
       instances:
@@ -125,7 +137,13 @@ spring:
           slidingWindowSize: 10
           failureRateThreshold: 50
           waitDurationInOpenState: 10000
-  
+
+logging:
+  level:
+    com.clinic.api_gateway_service: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
+
 management:
   endpoints:
     web:
