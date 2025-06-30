@@ -1,121 +1,6 @@
 spring:
   application:
-    name: api-gateway-service
-  cloud:
-    gateway:
-      cors:
-        allowed-origins: "http://localhost:5173"  # Cambia la URL a la del frontend React
-        allowed-methods:
-          - GET
-          - POST
-          - PUT
-          - DELETE
-        allowed-headers:
-          - "*"
-        allow-credentials: true
-      discovery:
-        locator:
-          enabled: true
-          lower-case-service-id: true
-      routes:
-        - id: eureka-service
-          uri: lb://eureka-server
-          predicates:
-            - Path=/eureka/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: eurekaCircuitBreaker
-                fallbackUri: forward:/fallback/eureka
-        - id: usuarios-service
-          uri: lb://usuarios-service
-          predicates:
-            - Path=/api/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: citaServiceCircuitBreaker
-                fallbackUri: forward:/fallback/usuarios-service
-
-        - id: cita-service
-          uri: lb://cita-service
-          predicates:
-            - Path=/api/citas/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: citaServiceCircuitBreaker
-                fallbackUri: forward:/fallback/cita-service
-
-        - id: personal-service
-          uri: lb://personal-service
-          predicates:
-            - Path=/api/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: personalServiceCircuitBreaker
-                fallbackUri: forward:/fallback/personal-service
-
-        - id: clinicas-service
-          uri: lb://clinicas-service
-          predicates:
-            - Path=/api/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: clinicasServiceCircuitBreaker
-                fallbackUri: forward:/fallback/clinicas-service
-
-        - id: historial-clinico-service
-          uri: lb://historial-clinico-service
-          predicates:
-            - Path=/api/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: historialclinicoServiceCircuitBreaker
-                fallbackUri: forward:/fallback/historial-clinico-service
-
-        - id: informes-service
-          uri: lb://informes-service
-          predicates:
-            - Path=/api/informes/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: informesServiceCircuitBreaker
-                fallbackUri: forward:/fallback/informes-service
-
-        - id: pacientes-service
-          uri: lb://pacientes-service
-          predicates:
-            - Path=/api/pacientes/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: pacientesServiceCircuitBreaker
-                fallbackUri: forward:/fallback/pacientes-service
-            - StripPrefix=1
-
-        - id: pagos-service
-          uri: lb://pagos-service
-          predicates:
-            - Path=/api/**
-          filters:
-            - name: CircuitBreaker
-              args:
-                name: pagosServiceCircuitBreaker
-                fallbackUri: forward:/fallback/pagos-service
-            - StripPrefix=1
-
-        - id: rate-limited-route
-          filters:
-            - name: RequestRateLimiter
-              args:
-                redis-rate-limiter.replenishRate: 10
-                redis-rate-limiter.burstCapacity: 20
-                redis-rate-limiter.requestedTokens: 1
+    name: auth-service
 
   security:
     oauth2:
@@ -123,63 +8,41 @@ spring:
         jwt:
           issuer-uri: http://localhost:8080/realms/clinica-realm
           jwk-set-uri: http://localhost:8080/realms/clinica-realm/protocol/openid-connect/certs
+      client:
+        registration:
+          keycloak:
+            client-id: clinica-client
+            client-secret: KfmLbZV2zCBNyXzxrqvVnyubDVBo2g7C
+            provider: keycloak
+            authorization-grant-type: authorization_code
+            redirect-uri: http://localhost:8081/login/oauth2/code/keycloak  # Asegúrate de reemplazar con tu URL base
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8080/realms/clinica-realm
+            authorization-uri: http://localhost:8080/realms/clinica-realm/protocol/openid-connect/auth
+            token-uri: http://localhost:8080/realms/clinica-realm/protocol/openid-connect/token
+            jwk-set-uri: http://localhost:8080/realms/clinica-realm/protocol/openid-connect/certs
 
-  resilience4j:
-    circuitbreaker:
-      instances:
-        eurekaCircuitBreaker:
-          registerHealthIndicator: true
-          slidingWindowSize: 10
-          failureRateThreshold: 50
-          waitDurationInOpenState: 10000
-  
-        citaServiceCircuitBreaker:
-          registerHealthIndicator: true
-          slidingWindowSize: 10
-          failureRateThreshold: 50
-          waitDurationInOpenState: 10000
-  
-        personalServiceCircuitBreaker:
-          registerHealthIndicator: true
-          slidingWindowSize: 10
-          failureRateThreshold: 50
-          waitDurationInOpenState: 10000
-  
-        clinicasServiceCircuitBreaker:
-          registerHealthIndicator: true
-          slidingWindowSize: 10
-          failureRateThreshold: 50
-          waitDurationInOpenState: 10000
-  
-        historialclinicoServiceCircuitBreaker:
-          registerHealthIndicator: true
-          slidingWindowSize: 10
-          failureRateThreshold: 50
-          waitDurationInOpenState: 10000
-  
-        informesServiceCircuitBreaker:
-          registerHealthIndicator: true
-          slidingWindowSize: 10
-          failureRateThreshold: 50
-          waitDurationInOpenState: 10000
-  
-        pacientesServiceCircuitBreaker:
-          registerHealthIndicator: true
-          slidingWindowSize: 10
-          failureRateThreshold: 50
-          waitDurationInOpenState: 10000
-  
-        pagosServiceCircuitBreaker:
-          registerHealthIndicator: true
-          slidingWindowSize: 10
-          failureRateThreshold: 50
-          waitDurationInOpenState: 10000
+  datasource:
+    url: jdbc:mysql://mysqldb:3306/clinica_db  # Verifica si el contenedor o servidor de MySQL está accesible
+    username: root
+    password: 123456
+    driver-class-name: com.mysql.cj.jdbc.Driver
 
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
 
-management:
-  endpoints:
-    web:
-      exposure:
-        include: health, info, metrics, prometheus  # Para monitoreo de salud y métricas
+jwt:
+  auth:
+    converter:
+      resource-id: clinica-client
+      principle-attribute: preferred_username
 
-# Asegúrate de que Redis esté correctamente configurado si usas rate limiting
+logging:
+  level:
+    org.keycloak: DEBUG  # Activa el logging para Keycloak en nivel DEBUG
