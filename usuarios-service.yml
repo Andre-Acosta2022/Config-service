@@ -22,10 +22,10 @@ spring:
 
 keycloak:
   auth-server-url: http://localhost:8080
-  realm: ecommerce
+  realm: clinica-realm
   resource: backend-client
   credentials:
-    secret: yo4FUA11RWp45kwBMjAeAipaZXKLmRxs
+    secret: KfmLbZV2zCBNyXzxrqvVnyubDVBo2g7C
 
 eureka:
   instance:
