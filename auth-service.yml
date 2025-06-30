@@ -21,8 +21,7 @@ spring:
             authorization-uri: http://localhost:8080/realms/clinica-realm/protocol/openid-connect/auth
             token-uri: http://localhost:8080/realms/clinica-realm/protocol/openid-connect/token
             jwk-set-uri: http://localhost:8080/realms/clinica-realm/protocol/openid-connect/certs
-server:
-  port: 8089
+
   datasource:
     url: jdbc:mysql://mysqldb:3306/clinica_db
     username: root
