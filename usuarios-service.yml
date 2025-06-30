@@ -23,16 +23,6 @@ spring:
 keycloak:
   auth-server-url: http://localhost:8080
   realm: clinica-realm
-  resource: backend-client
+  resource: clinica-client
   credentials:
     secret: KfmLbZV2zCBNyXzxrqvVnyubDVBo2g7C
-
-eureka:
-  instance:
-    hostname: localhost
-  client:
-    service-url:
-      defaultZone: http://localhost:8761/eureka/
-
-server:
-  port: 8093
