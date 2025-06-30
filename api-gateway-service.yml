@@ -25,6 +25,24 @@ spring:
               args:
                 name: eurekaCircuitBreaker
                 fallbackUri: forward:/fallback/eureka
+        - id: auth-service
+          uri: lb://auth-service
+          predicates:
+            - Path=/api/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: citaServiceCircuitBreaker
+                fallbackUri: forward:/fallback/auth-service
+        - id: usuarios-service
+          uri: lb://usuarios-service
+          predicates:
+            - Path=/api/**
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: citaServiceCircuitBreaker
+                fallbackUri: forward:/fallback/usuarios-service
 
         - id: cita-service
           uri: lb://cita-service
