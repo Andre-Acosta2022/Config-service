@@ -3,6 +3,10 @@ spring:
     name: auth-service
   security:
     oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/clinica-realm
+          jwk-set-uri: http://localhost:8080/realms/clinica-realm/protocol/openid-connect/certs
       client:
         registration:
           keycloak:
@@ -31,5 +35,11 @@ server:
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
-
-
+jwt:
+  auth:
+    converter:
+      resource-id: clinica-client
+      principle-attribute: preferred_username
+logging:
+  level:
+    org.keycloak: DEBUG
