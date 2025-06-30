@@ -1,7 +1,7 @@
 spring:
   application:
     name: usuarios-service
-  ddatasource:
+  datasource:
     url: jdbc:mysql://mysqldb:3306/clinica_db
     username: root
     password: 123456
